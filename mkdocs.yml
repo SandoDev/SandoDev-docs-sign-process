@@ -1,0 +1,10 @@
+site_name: Proceso de firma - Docs
+nav:
+    - Inicio: index.md
+    - Regla: rule.md
+    - Crear proceso: post.md
+    - Ejecutar pasos: next.md
+    - Acerca de: about.md
+theme: readthedocs
+
+lang: es
