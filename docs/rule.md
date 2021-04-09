@@ -7,8 +7,38 @@ El **servicio de firma** funciona como un orquestador de microservicios para fir
 ## Elementos de la regla
 
 ### uuid
+Identificador del producto, debe existir en el api de productos.
+
+    - Obligatorio
+    - Tipo: str(UUID)
+
+**Ejemplo de uso:**
+```json
+    "uuid": "a42dbee0-7743-4cb4-b782-6ca836f7889c"
+```
+
 ### slug
+Slug del producto
+
+    - Obligatorio
+    - Tipo: str
+
+**Ejemplo de uso:**
+```json
+    "slug": "credito-ordinario"
+```
+
 ### product
+Nombre del producto
+
+    - Obligatorio
+    - Tipo: str
+
+**Ejemplo de uso:**
+```json
+    "product": "Credito Ordinario"
+```
+
 ### expired
 ### process
 #### generals
