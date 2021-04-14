@@ -50,9 +50,46 @@ Nombre del producto
 ## Parámetros de un componente
 
 ### name
+Nombre del componente
+
+    - Obligatorio
+    - Tipo: str
+    - Anotación: en minúscula, separado por guión bajo, sin carácteres especiales
+
+**Ejemplo de uso:**
+```json
+    "name": "product"
+```
+
 ### type
 ### params
 ### priority
+Numero que indica el orden de ejecución del componente
+
+    - Obligatorio
+    - Tipo: num
+    - Anotación: cada componente debe tener un número diferente
+
+**Ejemplo de uso:**
+```json
+    "priority": 1
+```
+Será el primer componente en ejecutar
+```json
+    "priority": 2
+```
+Será el segundo componente en ejecutar
+
 ### direct_action
 ### mandatory
 ### auto
+### public
+Si este valor es true se mostrará a nivel general en el historial de pasos ejecutados
+
+    - Obligatorio
+    - Tipo: boolean
+
+**Ejemplo de uso:**
+```json
+    "public": true
+```

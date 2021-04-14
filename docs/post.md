@@ -61,24 +61,23 @@ Sobreescribe variables para algunos elementos
 **Ejemplo de uso:**
 ```json
     "overwrite": {
-        "customer": {
-            "":"",
-            "":""
-        },
         "legal_representative": {
-            "":"",
-            "":""
+            "name": "nombre-replace",
+            "doc_nro": "113218690"
         },
         "product": {
-            "":"",
-            "":""
+            "amount": 500000
         },
-        "co_debtors": {
-            "":"",
-            "":""
+        "customer": {
+            "first_name": "Pepe"
         }
     }
 ```
+
+<div class="note">
+    <strong>Nota: </strong>
+    Estas 3 llaves dentro de overwrite son los elementos actuales en funcionamiento y se deben escribir exactamente igual para que el programa las tome.
+</div>
 
 #### renew
 Renueva el proceso de firma para algún documento
