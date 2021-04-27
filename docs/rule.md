@@ -40,12 +40,66 @@ Nombre del producto
 ```
 
 ### expired
+Indica los días de expiración del proceso de firma una vez iniciado
+
+    - Obligatorio
+    - Tipo: int
+
+**Ejemplo de uso:**
+```json
+    "expired": 180
+```
 ### process
 #### generals
+Serán los primeros componentes que se ejecuten cuando se crea el proceso de firma
+
+    - Obligatorio
+    - Tipo: list(componentes)
+
+**Ejemplo de uso:**
+```json
+        "generals": [
+            {
+                "name": "create_process",
+                "type": "process",
+                "params": null,
+                "priority": 6,
+                "direct_action": {
+                    "active": false
+                },
+                "mandatory": true,
+                "auto": true,
+                "init_process": true
+            }
+        ],
+```
+
 #### signers
 #### documents
 #### canceled
 #### succes
+Serán los componentes que se ejecuten cuando se ha completado todo el proceso de firma exitosamente
+
+    - Obligatorio
+    - Tipo: list(componentes)
+
+**Ejemplo de uso:**
+```json
+        "success": [
+            {
+                "name": "notify_sns",
+                "params": null,
+                "priority": 1,
+                "direct_action": {
+                    "active": false
+                },
+                "auto": true,
+                "unique": true,
+                "return": false,
+                "public": false
+            }
+        ]
+```
 
 ## Parámetros de un componente
 

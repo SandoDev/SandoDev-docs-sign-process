@@ -90,6 +90,17 @@ Renueva el proceso de firma para algún documento
     "renew": ["contrato","pagare"]
 ```
 
+#### cancel_old_processes
+Cancela todos los procesos de firma antiguos para ese contacto con ese producto, dejando activo únicamente el nuevo proceso que se esta creando
+
+    - Opcional
+    - Tipo: bool
+
+**Ejemplo de uso:**
+```json
+    "cancel_old_processes": true
+```
+
 ## Respuesta correcta
 
     status: ok 
