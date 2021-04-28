@@ -110,7 +110,9 @@ Cancela todos los procesos de firma antiguos para ese contacto con ese producto,
 
 ```json
 {
-    "process_id": "528901eb6906ei2828a1ebca0ff904789ea63f76",
+    "process_id": "c6f0b0d08c9fb44e6c342e721194379618fdc6da",
+    "created_at": "2021-04-23T16:30:13.772000",
+    "expires": "2021-05-22 16:30:13.772000",
     "documents": [
         {
             "name": "c212397f-94ce-4512-9654-015c70d44146",
