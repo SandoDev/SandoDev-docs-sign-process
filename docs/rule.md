@@ -76,6 +76,64 @@ Serán los primeros componentes que se ejecuten cuando se crea el proceso de fir
 
 #### signers
 #### documents
+Serán los documentos a firmar, cada documento puede ser configurado con diferentes componentes en la llave `steps`, y se ejecutarán utilizando el endpoint de [`next_steps`](next.md) 
+
+    - Obligatorio
+    - Tipo: list(documents)
+
+```json
+            "documents": [
+                {
+                    "name": "e92fd52e-5481-4b0c-994b-efa51bf0fc28",
+                    "description": "Contrato para crédito",
+                    "type": "contrato",
+                    "steps": [
+                        {
+                            "name": "template",
+                            "params": null,
+                            "priority": 1,
+                            "direct_action": {
+                                "active": false
+                            },
+                            "auto": true,
+                            "unique": true,
+                            "return": false,
+                            "public": false
+                        },
+                        {
+                            "name": "view_document",
+                            "params": {
+                                "location_document": "template",
+                                "generate": "s3"
+                            },
+                            "priority": 2,
+                            "direct_action": {
+                                "active": false
+                            },
+                            "mandatory": false,
+                            "auto": false,
+                            "unique": false,
+                            "return": true,
+                            "public": true
+                        },
+                        {
+                            "name": "myfield",
+                            "params": null,
+                            "priority": 3,
+                            "direct_action": {
+                                "active": false
+                            },
+                            "mandatory": false,
+                            "auto": false,
+                            "unique": false,
+                            "return": true,
+                            "public": true
+                        }
+                    ]
+                }
+            ],
+```
+
 #### canceled
 #### succes
 Serán los componentes que se ejecuten cuando se ha completado todo el proceso de firma exitosamente
