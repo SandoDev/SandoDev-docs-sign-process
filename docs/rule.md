@@ -2,7 +2,7 @@
 
 La **regla** es un concepto ideado por el equipo de tecnología de **Zinobe** que tiene como finalidad controlar el flujo de funcionamiento de un servicio.
 
-El **servicio de firma** funciona como un orquestador de microservicios para firmar documentos digitalmente. En la regla para este servicio se podrá configurar los **componentes** (microservicios) que se utilizarán para un flujo de firma especifíco.
+El **servicio de firma** funciona como un orquestador de microservicios para firmar documentos digitalmente. En la regla para este servicio se podrá configurar los **componentes** (microservicios o funcionalidades) que se utilizarán para un flujo de firma especifíco.
 
 ## Elementos de la regla
 
@@ -50,6 +50,7 @@ Indica los días de expiración del proceso de firma una vez iniciado
     "expired": 180
 ```
 ### process
+Contiene el flujo completo para el proceso de firma, esta compuesto por 5 llaves: generals, documents, success, canceled, signers
 #### generals
 Serán los primeros componentes que se ejecuten cuando se crea el proceso de firma
 
@@ -74,7 +75,6 @@ Serán los primeros componentes que se ejecuten cuando se crea el proceso de fir
         ],
 ```
 
-#### signers
 #### documents
 Serán los documentos a firmar, cada documento puede ser configurado con diferentes componentes en la llave `steps`, y se ejecutarán utilizando el endpoint de [`next_steps`](next.md) 
 
@@ -134,9 +134,8 @@ Serán los documentos a firmar, cada documento puede ser configurado con diferen
             ],
 ```
 
-#### canceled
-#### succes
-Serán los componentes que se ejecuten cuando se ha completado todo el proceso de firma exitosamente
+#### success
+Serán los componentes que se ejecuten cuando se ha completado todo el proceso de firma exitosamente, es decir cuando ya paso por la ejecución de los pasos de todos los documentos
 
     - Obligatorio
     - Tipo: list(componentes)
@@ -159,7 +158,99 @@ Serán los componentes que se ejecuten cuando se ha completado todo el proceso d
         ]
 ```
 
+#### canceled
+Son los componentes que se ejecutan cuando se cancela el proceso de firma
+
+    - Obligatorio
+    - Tipo: list(componentes)
+
+**Ejemplo de uso:**
+```json
+    "canceled": [
+        {
+            "name": "decval_cancel",
+            "depend": false,
+            "direct_action": {
+                "active": false
+            },
+            "params": null,
+            "priority": 1,
+            "unique": false,
+            "return": false,
+            "public": false
+        },
+        {
+            "name": "notify_sns",
+            "depend": false,
+            "direct_action": {
+                "active": false
+            },
+            "params": {
+                "cancelled": true
+            },
+            "priority": 2,
+            "unique": false,
+            "return": false,
+            "public": false
+        }
+    ]
+```
+
+#### signers
+Son los componentes que se ejecutan para cada firmante
+
+    - Obligatorio
+    - Tipo: list(componentes)
+
+**Ejemplo de uso:**
+```json
+    "signers": [
+        {
+            "name": "validation_generate",
+            "params": {
+                "channels": [
+                    {
+                        "channel": "sms",
+                        "value": "",
+                        "template": "Aliatu le informa que su token de validacion es "
+                    },
+                    {
+                        "channel": "email",
+                        "value": "",
+                        "template": "token-de-verificacion"
+                    }
+                ]
+            },
+            "priority": 4,
+            "direct_action": {
+                "active": false
+            },
+            "mandatory": false,
+            "auto": true,
+            "unique": false,
+            "return": false,
+            "public": true
+        }
+    ]
+```
+
 ## Parámetros de un componente
+Un componente es un objeto con diferentes atributos que puede ser reflejado en la ejecución de un microservicio o funcionalidad.
+
+El siguiene componente indica que será ejecutado el servicio de **contacts** el cuál trae la información del los contactos de Zinobe.
+```json
+    {
+        "name": "contacts",
+        "params": null,
+        "priority": 3,
+        "direct_action": {
+            "active": false
+        },
+        "mandatory": true,
+        "auto": true
+    }
+```
+Se listan a continuación los atributos que puede tener un componente.
 
 ### name
 Nombre del componente
@@ -174,7 +265,31 @@ Nombre del componente
 ```
 
 ### type
+----?
+
+    - Obligatorio
+    - Tipo: str
+
+**Ejemplo de uso:**
+```json
+    "type": "process"
+```
+
 ### params
+Parámetros adicionales para la ejecución del componente
+
+    - Obligatorio
+    - Tipo: object
+    - Tipo: Si el componente necesita un parámetro especial puede ser enviado en este apartado
+
+**Ejemplo de uso:**
+```json
+    "params": {
+        "location_document": "template",
+        "generate": "s3"
+    }
+```
+
 ### priority
 Numero que indica el orden de ejecución del componente
 
@@ -193,8 +308,80 @@ Será el primer componente en ejecutar
 Será el segundo componente en ejecutar
 
 ### direct_action
+Indica si un componente requiere alguna acción directa por parte del cliente
+
+    - Obligatorio
+    - Tipo: object
+
+**Ejemplo de uso:**
+```json
+    "direct_action": {
+        "active": true,
+        "error": "Rquiere la validacion de los tokens",
+        "meta": {
+            "endpoint": "token/validate",
+            "method": "POST",
+            "body": {
+                "channels": [
+                    {
+                        "channel": "sms",
+                        "value_token": ""
+                    },
+                    {
+                        "channel": "email",
+                        "value_token": ""
+                    }
+                ]
+            }
+        }
+    }
+```
+
 ### mandatory
+Si este valor es true el response del componente estará disponible (mediante la llave params de la clase principal) para la ejecución de componentes posteriores
+
+    - Obligatorio
+    - Tipo: boolean
+
+**Ejemplo de uso:**
+```json
+    "mandatory": false
+```
+
 ### auto
+Si este valor es true el componente será ejecutado automáticamente despues de la ejecución del anterior
+
+    - Obligatorio
+    - Tipo: boolean
+
+**Ejemplo de uso:**
+```json
+    "auto": false
+```
+
+### unique
+Si este valor es true el componente se ejecutará una única vez en todo el proceso de firma para todos los firmantes
+
+    - Obligatorio
+    - Tipo: boolean
+
+**Ejemplo de uso:**
+```json
+    "unique": false
+```
+
+### return
+Si este valor es true el componente deberá retornar una respuesta al cliente inmediatamente termine su ejecución
+
+    - Obligatorio
+    - Tipo: boolean
+    - Anotación: Valide que después del actual componente no haya ninguno que requiera ejecución automática
+
+**Ejemplo de uso:**
+```json
+    "return": true
+```
+
 ### public
 Si este valor es true se mostrará a nivel general en el historial de pasos ejecutados
 
