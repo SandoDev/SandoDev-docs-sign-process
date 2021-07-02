@@ -1,6 +1,7 @@
 site_name: Proceso de firma - Docs
 nav:
     - Inicio: index.md
+    - Empezar ahora: fast.md
     - Regla: rule.md
     - Crear proceso: post.md
     - Ejecutar pasos: next.md
