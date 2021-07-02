@@ -2,6 +2,8 @@
 
 El **servicio de firma** funciona como un orquestador de microservicios para firmar documentos digitalmente.
 
+## Inicio rápido [Aquí](fast.md)
+
 ## Flujo general para un firmante
 
 1. Cree la [regla](rule.md) para un producto

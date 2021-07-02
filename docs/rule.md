@@ -1,3 +1,26 @@
+- [Regla del proceso de firma](#regla-del-proceso-de-firma)
+  - [Elementos de la regla](#elementos-de-la-regla)
+    - [uuid](#uuid)
+    - [slug](#slug)
+    - [product](#product)
+    - [expired](#expired)
+    - [process](#process)
+      - [generals](#generals)
+      - [documents](#documents)
+      - [success](#success)
+      - [canceled](#canceled)
+      - [signers](#signers)
+  - [Parámetros de un componente](#parámetros-de-un-componente)
+    - [name](#name)
+    - [type](#type)
+    - [params](#params)
+    - [priority](#priority)
+    - [direct_action](#direct_action)
+    - [mandatory](#mandatory)
+    - [auto](#auto)
+    - [unique](#unique)
+    - [return](#return)
+    - [public](#public)
 # Regla del proceso de firma
 
 La **regla** es un concepto ideado por el equipo de tecnología de **Zinobe** que tiene como finalidad controlar el flujo de funcionamiento de un servicio.
@@ -135,7 +158,7 @@ Serán los documentos a firmar, cada documento puede ser configurado con diferen
 ```
 
 #### success
-Serán los componentes que se ejecuten cuando se ha completado todo el proceso de firma exitosamente, es decir cuando ya paso por la ejecución de los pasos de todos los documentos
+Serán los componentes que se ejecuten cuando un firmante ha completado de firmar todos los documentos que tenía asignados
 
     - Obligatorio
     - Tipo: list(componentes)
