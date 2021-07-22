@@ -4,13 +4,12 @@
     - [Paso 1](#paso-1)
     - [Paso 2](#paso-2)
     - [Paso 3](#paso-3)
+    - [Paso 4](#paso-4)
   - [Firmar el siguiente documento](#firmar-el-siguiente-documento)
   - [Finalmente](#finalmente)
 # Inicio rápido
 
-ESSSSSSTOOOO ESSSSTAAA EN CONSSSTRUCCIÓN........
-
-AJUSTAR CURL Y RESPONSE...
+Guía de inicio rápido de uso del servicio de Sign-Process
 
 ## Crear el proceso
 Cree un proceso de firma con el siguiente curl, reemplazando el host por el adecuado.
@@ -19,25 +18,25 @@ Cree un proceso de firma con el siguiente curl, reemplazando el host por el adec
 2. Procure que exista una regla para el producto. `product_uuid`
 3. Verifique que el contacto tiene todos sus formularios llenos. `contact_uuid`
 ```curl
-curl --location -g --request POST '{{host}}/api/v1/documents' \
+curl --location --request POST '{{host}}/api/v1/documents' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "application_uid": "685896118",
     "product_uuid": "5205c9b6-14c2-11eb-94ae-0fcd21ac0359",
-    "contact_uuid": "783b1fd1-e0a4-4dd5-878a-54385b5f0b61"
+    "contact_uuid": "12fa5b7f-4a1e-4884-b040-7b5e181c6b05"
 }'
 ```
 
-**Response**
+**Response [200]**
 ```json
 {
-    "process_id": "c6f0b0d08c9fb44e6c342e721194379618fdc6da",
-    "created_at": "2021-04-23T16:30:13.772000",
-    "expires": "2021-05-22 16:30:13.772000",
+    "process_id": "bc6c3435a91f88d74b762a5ddb1b7eb5892d08c8",
+    "created_at": "2021-07-22T15:40:01.219000",
+    "expires": "2021-07-22 15:40:01.219000",
     "documents": [
         {
-            "name": "c212397f-94ce-4512-9654-015c70d44146",
-            "description": "Contrato para crédito",
+            "name": "f8ba746a-b692-4f6e-933c-e58837ebc75d",
+            "description": "Contrato para crédito rotativo aliatu",
             "type": "contrato",
             "signed_at": null,
             "step": "",
@@ -45,8 +44,8 @@ curl --location -g --request POST '{{host}}/api/v1/documents' \
             "document": null
         },
         {
-            "name": "c31e8c26-7764-4cc3-9b48-4c2310c7e884",
-            "description": "Pagaŕe para crédito",
+            "name": "a7bfeddb-af2b-4b11-af4a-01dca30d2895",
+            "description": "Pagare + carta de instrucción + FNG",
             "type": "pagare",
             "signed_at": null,
             "step": "",
@@ -70,19 +69,62 @@ Ejecute una vez este curl, para firmar el primer documento.
 curl --location --request POST '{{host}}/api/v1/next_steps' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "process_id": "c6f0b0d08c9fb44e6c342e721194379618fdc6da",
-    "document_template": "c212397f-94ce-4512-9654-015c70d44146",
-    "contact_uuid": "783b1fd1-e0a4-4dd5-878a-54385b5f0b61"
+    "process_id": "bc6c3435a91f88d74b762a5ddb1b7eb5892d08c8",
+    "document_template": "f8ba746a-b692-4f6e-933c-e58837ebc75d",
+    "contact_uuid": "12fa5b7f-4a1e-4884-b040-7b5e181c6b05"
 }'
 ```
 
-**Response**
+**Response [200]**
+```json
+{
+    "success": true,
+    "document": "https://zinobe-test.s3.amazonaws.com/templates/08d186f2-7070-4f9f-82ac-91571a3abf15.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIARDM62DIACYWN3YCV%2F20210722%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210722T204453Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=f2df8a4ef8ec6f6e668ccc1c641fce04f1fb8e4918b855ca86beabffc9eeca7c",
+    "message": "Document preview",
+    "data": {
+        "step": "view_document"
+    }
+}
+```
 
 ### Paso 2
 
 Vuelva a ejecutar el curl anterior
 
-**Response**
+```curl
+curl --location --request POST '{{host}}/api/v1/next_steps' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "process_id": "bc6c3435a91f88d74b762a5ddb1b7eb5892d08c8",
+    "document_template": "f8ba746a-b692-4f6e-933c-e58837ebc75d",
+    "contact_uuid": "12fa5b7f-4a1e-4884-b040-7b5e181c6b05"
+}'
+```
+
+**Response [200]**
+```json
+{
+    "success": true,
+    "message": "Rquiere la validacion de los tokens",
+    "data": {
+        "endpoint": "token/validate",
+        "method": "POST",
+        "body": {
+            "channels": [
+                {
+                    "channel": "sms",
+                    "value_token": ""
+                },
+                {
+                    "channel": "email",
+                    "value_token": ""
+                }
+            ]
+        },
+        "step": "validation"
+    }
+}
+```
 
 ### Paso 3
 
@@ -92,27 +134,64 @@ Valide los tokens que le llegaron al email y al sms del contacto, con el siguien
 curl --location --request POST '{{host}}/api/v1/token/validate' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "process_id": "c6f0b0d08c9fb44e6c342e721194379618fdc6da",
-    "document_template": "c212397f-94ce-4512-9654-015c70d44146",
-    "contact_uuid": "783b1fd1-e0a4-4dd5-878a-54385b5f0b61",
+    "process_id": "bc6c3435a91f88d74b762a5ddb1b7eb5892d08c8",
+    "document_template": "f8ba746a-b692-4f6e-933c-e58837ebc75d",
+    "contact_uuid": "12fa5b7f-4a1e-4884-b040-7b5e181c6b05",
     "channels": [
         {
             "channel": "sms",
-            "value_token": "258700"
+            "value_token": "112448"
         },
         {
             "channel": "email",
-            "value_token": "411314"
+            "value_token": "593092"
         }
     ]
 }'
 ```
 
-**Response**
+**Response [200]**
+```json
+{
+    "success": true,
+    "uuid": "6e6dde78-8228-42cc-90f0-a6fcf5010b99",
+    "message": "Tokens validated",
+    "data": {
+        "step": "validation"
+    }
+}
+```
+
+### Paso 4
+
+Volver a ejecutar el endpoint de next_steps
+
+```curl
+curl --location --request POST '{{host}}/api/v1/next_steps' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "process_id": "bc6c3435a91f88d74b762a5ddb1b7eb5892d08c8",
+    "document_template": "f8ba746a-b692-4f6e-933c-e58837ebc75d",
+    "contact_uuid": "12fa5b7f-4a1e-4884-b040-7b5e181c6b05"
+}'
+```
+
+**Response [200]**
+```json
+{
+    "success": true,
+    "document": "https://zinobe-test.s3.amazonaws.com/files/pdf/2021/07/22/20/45959168-f69d-4ffa-b7f1-f51720b37d06.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIARDM62DIACYWN3YCV%2F20210722%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210722T205201Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=b28ffec20eb21758769557123be38b11257ad98354c84eb2cf67954e8b3978fb",
+    "uuid": "45959168-f69d-4ffa-b7f1-f51720b37d06",
+    "message": "The service has been effectively consumed",
+    "data": {
+        "step": "sign"
+    }
+}
+```
 
 ## Firmar el siguiente documento
 
-Repetir todos los pasos que se hicieron para el documento anterior.
+Repetir los 3 primeros pasos que se hicieron para el documento anterior.
 
 Asegurese de cambiar el `document_template` con el uuid del documento que no ha firmado.
 
@@ -121,38 +200,47 @@ Asegurese de cambiar el `document_template` con el uuid del documento que no ha 
 Ejecute el primer curl y verifique que en el response las llaves `signed_at` de cada documento tienen fecha y hora
 
 ```curl
-curl --location -g --request POST '{{host}}/api/v1/documents' \
+curl --location --request POST '{{host}}/api/v1/documents' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "application_uid": "685896118",
     "product_uuid": "5205c9b6-14c2-11eb-94ae-0fcd21ac0359",
-    "contact_uuid": "783b1fd1-e0a4-4dd5-878a-54385b5f0b61"
+    "contact_uuid": "12fa5b7f-4a1e-4884-b040-7b5e181c6b05"
 }'
 ```
 
-**Response**
+**Response [200]**
 ```json
 {
-    "process_id": "c6f0b0d08c9fb44e6c342e721194379618fdc6da",
-    "created_at": "2021-04-23T16:30:13.772000",
-    "expires": "2021-05-22 16:30:13.772000",
+    "process_id": "bc6c3435a91f88d74b762a5ddb1b7eb5892d08c8",
+    "created_at": "2021-07-22T15:40:01.219000",
+    "expires": "2021-07-22 15:40:01.219000",
     "documents": [
         {
-            "name": "c212397f-94ce-4512-9654-015c70d44146",
-            "description": "Contrato para crédito",
+            "name": "f8ba746a-b692-4f6e-933c-e58837ebc75d",
+            "description": "Contrato para crédito rotativo aliatu",
             "type": "contrato",
-            "signed_at": null,
-            "step": "",
-            "history_steps": [],
-            "document": null
+            "signed_at": "2021-07-22T15:52:05.316000",
+            "step": "sign",
+            "history_steps": [
+                "view_document",
+                "validation_generate",
+                "validation",
+                "sign"
+            ],
+            "document": "https://zinobe-test.s3.amazonaws.com/files/pdf/2021/07/22/20/45959168-f69d-4ffa-b7f1-f51720b37d06.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIARDM62DIACYWN3YCV%2F20210722%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210722T205552Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=e3f91a1f3d59aa087c5e433325e0789e352aa649da33f57c3a1b89ddd4395aad"
         },
         {
-            "name": "c31e8c26-7764-4cc3-9b48-4c2310c7e884",
-            "description": "Pagaŕe para crédito",
+            "name": "a7bfeddb-af2b-4b11-af4a-01dca30d2895",
+            "description": "Pagare + carta de instrucción + FNG",
             "type": "pagare",
-            "signed_at": null,
-            "step": "",
-            "history_steps": [],
+            "signed_at": "2021-07-22T15:54:16.245000",
+            "step": "validation",
+            "history_steps": [
+                "view_document",
+                "validation_generate",
+                "validation"
+            ],
             "document": null
         }
     ]
